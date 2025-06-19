@@ -1,0 +1,78 @@
+
+local player = game.Players.LocalPlayer
+
+local LMAO = Instance.new("ScreenGui")
+local Enabler = Instance.new("TextButton")
+local UICorner = Instance.new("UICorner")
+local TextStroke = Instance.new("UIStroke")
+local BorderStroke = Instance.new("UIStroke")
+
+local function getCharacter()
+	local character = player.Character or player.CharacterAdded:Wait()
+	return character
+end
+
+
+
+Enabled = false
+
+LMAO.Name = "LMAO"
+LMAO.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+LMAO.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Enabler.Name = "Enabler"
+Enabler.Parent = LMAO
+Enabler.BackgroundColor3 = Color3.fromRGB(131, 255, 141)
+Enabler.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Enabler.BorderSizePixel = 0
+Enabler.Position = UDim2.new(0.882533193, 0, 0.468281418, 0)
+Enabler.Size = UDim2.new(0.117262498, 0, 0.0807612687, 0)
+Enabler.Font = Enum.Font.Unknown
+Enabler.Text = "Enable"
+Enabler.TextColor3 = Color3.fromRGB(255, 255, 255)
+Enabler.TextScaled = true
+Enabler.TextSize = 14.000
+Enabler.TextWrapped = true
+
+UICorner.Parent = Enabler
+
+TextStroke.Parent = Enabler
+TextStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+TextStroke.Thickness = 2
+
+BorderStroke.Parent = Enabler
+BorderStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+BorderStroke.Thickness = 2
+
+local runLoop = false
+local loopThread
+
+Enabler.MouseButton1Click:Connect(function()
+	runLoop = not runLoop
+	Enabler.Text = runLoop and "Disable" or "Enable"
+	Enabler.BackgroundColor3 = runLoop and Color3.fromRGB(255,80,83) or Color3.fromRGB(131,255,141)
+
+	if runLoop then
+		loopThread = task.spawn(function()
+			while runLoop do
+				local char = getCharacter()
+				local root = char:WaitForChild("HumanoidRootPart")
+				local soulsFolder = workspace:FindFirstChild("Soul")
+				if soulsFolder and root then
+					for _, part in ipairs(soulsFolder:GetDescendants()) do
+						if part:IsA("BasePart") and part.Transparency < 1 then
+							root.CFrame = part.CFrame
+							task.wait(0.2)
+						end
+					end
+				end
+				task.wait(2)
+			end
+		end)
+	else
+		if loopThread then
+			task.cancel(loopThread)
+			loopThread = nil
+		end
+	end
+end)
