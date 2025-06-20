@@ -60,7 +60,6 @@ Enabler.MouseButton1Click:Connect(function()
 				if soulsFolder and root then
 					for _, part in ipairs(soulsFolder:GetDescendants()) do
 						if part:IsA("BasePart") and part.Transparency < 1 then
-							part:WaitForChild("Destroy"):Destroy()
 							root.CFrame = part.CFrame
 							task.wait(0.2)
 						end
